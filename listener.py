@@ -21,12 +21,12 @@ class Listener:
             data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
             # print("received message: %s" % data)
             packet2 = codec.unpack(data)
-            # print(f"{packet2.TireTempFrontLeft:.1f} {packet2.TireTempFrontRight:.1f} {packet2.TireTempRearLeft:.1f} {packet2.TireTempRearRight:.1f}")
-            print(
-                f"{packet2.TireSlipRatioFrontLeft:.1f} {packet2.TireSlipRatioFrontRight:.1f} {packet2.TireSlipRatioRearLeft:.1f} {packet2.TireSlipRatioRearRight:.1f}")
+            print(f"{packet2.TireTempFrontLeft:.1f} {packet2.TireTempFrontRight:.1f} {packet2.TireTempRearLeft:.1f} {packet2.TireTempRearRight:.1f}")
+            # print(
+            #     f"{packet2.TireSlipRatioFrontLeft:.1f} {packet2.TireSlipRatioFrontRight:.1f} {packet2.TireSlipRatioRearLeft:.1f} {packet2.TireSlipRatioRearRight:.1f}")
             # self.win.onNewData(packet2.TireTempRearRight)
             if packet2.IsRaceOn == 1:
-                self.sc.got_new_sensor_data.emit(packet2.CurrentRaceTime, packet2.TireTempRearRight)
+                self.sc.got_new_sensor_data.emit(packet2)
 
     def stop(self):
         self.running = False

@@ -1,6 +1,8 @@
 import sys
 import threading
 from PyQt5 import QtWidgets
+import OpenGL
+import pyqtgraph as pg
 
 from listener import Listener
 from plotter import SignalCommunicate, Window
@@ -20,6 +22,9 @@ if __name__ == '__main__':
     #     # win.resize(800, 600)
     #     # win.raise_()
     #     sys.exit(app.exec_())
+
+    # pg.setConfigOption('useOpenGL', True)
+    # pg.setConfigOption('enableExperimental', True)
     app = QtWidgets.QApplication(sys.argv)
 
     sc = SignalCommunicate()
