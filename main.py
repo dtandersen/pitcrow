@@ -29,7 +29,9 @@ if __name__ == '__main__':
 
     sc = SignalCommunicate()
     listener = Listener(sc)
-    win = Window()
+    plugins = ['widget.tiretemp.TireTemperature', 'widget.tireangle.TireAngle', 'widget.oversteer.Oversteer']
+    win = Window(plugins)
+
     win.on_exit = stop_listener
     win.listener = listener
     win.activate_signal(sc)
