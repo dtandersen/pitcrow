@@ -16,10 +16,12 @@ if __name__ == '__main__':
     sc = SignalCommunicate()
     listener = Listener(sc)
     plugins = [
-        # 'widget.tiretemp.TireTemperature',
-        # 'widget.tireangle.TireAngle',
-        # 'widget.oversteer.Oversteer',
-        'widget.FrictionCircle',
+        # 'widget.TireTemperature',
+        # 'widget.TireAngle',
+        # 'widget.Oversteer',
+        # 'widget.FrictionCircle',
+        'widget.PitchGradient',
+        # 'widget.RollGradient',
     ]
     mainWindow = MainWindow(plugins)
 
@@ -31,6 +33,6 @@ if __name__ == '__main__':
     x.start()
 
     mainWindow.show()
-    mainWindow.resize(800, 600)
+    # mainWindow.resize(800, 600)
     mainWindow.raise_()
     sys.exit(app.exec_())

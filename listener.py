@@ -27,6 +27,7 @@ class Listener:
                 self.lastLap = packet2.LapNumber
 
             packet2.DistanceTraveled = packet2.DistanceTraveled - distOffset
+            print(f"{packet2.Yaw:.2f} {packet2.Pitch:.2f} {packet2.Roll:.2f}")
 
             if packet2.IsRaceOn == 1:
                 self.sc.got_new_sensor_data.emit(packet2)
