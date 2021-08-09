@@ -3,9 +3,10 @@ from pyqtgraph import mkPen
 
 from packet import DashPacket
 from signal import SignalCommunicate
+from widget.base import BasePlot
 
 
-class TireTemperature(pg.GraphicsLayoutWidget):
+class TireTemperature(BasePlot):
     def __init__(self):
         super(TireTemperature, self).__init__()
 
@@ -21,11 +22,8 @@ class TireTemperature(pg.GraphicsLayoutWidget):
         self.leftRearData = []
         self.rightRearData = []
 
-    def activate_signal(self, sc: SignalCommunicate):
-        sc.got_new_sensor_data.connect(self.onNewData)
-
     def onNewData(self, packet: DashPacket):
-        self.append(self.time, packet.CurrentRaceTime)
+        self.append(self.time, packet.DistanceTraveled)
 
         self.append(self.leftFrontData, packet.TireTempFrontLeft)
         self.append(self.rightFrontData, packet.TireTempFrontRight)
@@ -36,9 +34,3 @@ class TireTemperature(pg.GraphicsLayoutWidget):
         self.rightFront.setData(self.time, self.rightFrontData)
         self.leftRear.setData(self.time, self.leftRearData)
         self.rightRear.setData(self.time, self.rightRearData)
-
-    def append(self, values: list, value):
-        if len(values) > 3600:
-            values.pop(0)
-
-        values.append(value)

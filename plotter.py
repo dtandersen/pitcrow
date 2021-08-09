@@ -5,9 +5,9 @@ import importlib
 from signal import SignalCommunicate
 
 
-class Window(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self, plugins: list[str]):
-        super(Window, self).__init__()
+        super(MainWindow, self).__init__()
         self.plugins = plugins
         self.pluginReferences = []
         self.initUI()  # call the UI set up

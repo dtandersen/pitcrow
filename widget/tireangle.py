@@ -3,9 +3,10 @@ from pyqtgraph import mkPen
 
 from packet import DashPacket
 from signal import SignalCommunicate
+from widget.base import BasePlot
 
 
-class TireAngle(pg.GraphicsLayoutWidget):
+class TireAngle(BasePlot):
     def __init__(self):
         super(TireAngle, self).__init__()
 
@@ -22,11 +23,8 @@ class TireAngle(pg.GraphicsLayoutWidget):
         self.leftRearData = []
         self.rightRearData = []
 
-    def activate_signal(self, sc: SignalCommunicate):
-        sc.got_new_sensor_data.connect(self.onNewData)
-
     def onNewData(self, packet: DashPacket):
-        self.append(self.time, packet.CurrentRaceTime)
+        self.append(self.time, packet.DistanceTraveled)
 
         self.append(self.leftFrontData, packet.TireSlipAngleFrontLeft)
         self.append(self.rightFrontData, packet.TireSlipAngleFrontRight)
@@ -37,9 +35,3 @@ class TireAngle(pg.GraphicsLayoutWidget):
         self.rightFront.setData(self.time, self.rightFrontData)
         self.leftRear.setData(self.time, self.leftRearData)
         self.rightRear.setData(self.time, self.rightRearData)
-
-    def append(self, values: list, value):
-        if len(values) > 3600:
-            values.pop(0)
-
-        values.append(value)
