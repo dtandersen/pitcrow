@@ -1,14 +1,14 @@
 import socket
 
 from packet import DashCodec
-from plotter import SignalCommunicate
+from signal import DataListener
 
 UDP_IP = '0.0.0.0'
 UDP_PORT = 20127
 
 
 class Listener:
-    def __init__(self, sc: SignalCommunicate):
+    def __init__(self, sc: DataListener):
         self.sc = sc
         self.running = True
         self.lastLap = 0
@@ -27,10 +27,10 @@ class Listener:
                 self.lastLap = packet2.LapNumber
 
             packet2.DistanceTraveled = packet2.DistanceTraveled - distOffset
-            print(f"{packet2.Yaw:.2f} {packet2.Pitch:.2f} {packet2.Roll:.2f}")
+            # print(f"{packet2.Yaw:.2f} {packet2.Pitch:.2f} {packet2.Roll:.2f}")
 
             if packet2.IsRaceOn == 1:
-                self.sc.got_new_sensor_data.emit(packet2)
+                self.sc.recv(packet2)
 
     def stop(self):
         self.running = False

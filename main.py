@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets
 
 from listener import Listener
 from plotter import SignalCommunicate, MainWindow
+from signal import SignalCommunicateAdapter
 
 
 def stop_listener():
@@ -14,7 +15,8 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
 
     sc = SignalCommunicate()
-    listener = Listener(sc)
+    adapter = SignalCommunicateAdapter(sc)
+    listener = Listener(adapter)
     plugins = [
         # 'widget.TireTemperature',
         # 'widget.TireAngle',
