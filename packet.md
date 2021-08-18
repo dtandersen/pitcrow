@@ -115,3 +115,9 @@ s8 NormalizedAIBrakeDifference;
 ```
 
 https://forums.forzamotorsport.net/turn10_postst128499_Forza-Motorsport-7--Data-Out--feature-details.aspx
+
+> TireSlipRatioFrontLeft << this is longitudinal slip or just spin.
+> TireSlipAngleFrontLeft << this is lateral tire slip angle (not the same as wheel angle).
+> TireCombinedSlipFrontLeft; << this is combination of the two above. Although the way they normalize this, it is hard to make sense of this third value.
+
+> TireSlipRatioFrontLeft can be used to calculate Fx, and TireSlipAngleFrontLeft could be used to calculate Fy at pure slip. TireCombinedSlipFrontLeft can be used to calculate the same at combined slip.

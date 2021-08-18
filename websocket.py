@@ -1,12 +1,11 @@
 import dataclasses
 import json
 import threading
-import asyncio
-import websockets
-import asyncio
 import datetime
 import random
+import asyncio
 import websockets
+from websockets.exceptions import ConnectionClosedOK
 
 from listener import Listener
 from packet import DashPacket
@@ -20,82 +19,47 @@ class EnhancedJSONEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-#
-#
 class JsonSender(DataListener):
     def __init__(self):
         self.data = None
+        self.websocket = None
 
     def recv(self, data: DashPacket):
+        # if self.websocket is None:
+        #     return
+
+        print("got data")
         self.data = data
+        # x = json.dumps(self.data, cls=EnhancedJSONEncoder)
+        # try:
+        #     print("sending" + x)
+        #     asyncio.run(self.websocket.send(x))
+        # except ConnectionClosedOK:
+        #     pass
 
     async def time(self, websocket, path):
+        self.websocket = websocket
+        listener.init()
         while True:
+            listener.read_data()
             if self.data is None:
                 print("no data")
                 continue
-            now = datetime.datetime.utcnow().isoformat() + "Z"
+
             x = json.dumps(self.data, cls=EnhancedJSONEncoder)
-            print(x)
+            self.data = None
             await websocket.send(x)
-            await asyncio.sleep(random.random() * 3)
-
-    #
-    #
-    # async def hello(websocket, path):
-    #     name = await websocket.recv()
-    #     print(f"< {name}")
-    #
-    #     greeting = f"Hello {name}!"
-    #
-    #     await websocket.send(greeting)
-    #     print(f"> {greeting}")
-    #
-    #
-
-    # if __name__ == '__main__':
-
-
-sender = JsonSender()
-
-listener = Listener(sender)
-x = threading.Thread(target=listener.go)
-x.start()
-#
-#     # start_server = websockets.serve(hello, "localhost", 8765)
-#     #
-#     # asyncio.get_event_loop().run_until_complete(start_server)
-#     # asyncio.get_event_loop().run_forever()
-#
-#     start_server = websockets.serve(time, "127.0.0.1", 5678)
-#
-#     asyncio.get_event_loop().run_until_complete(start_server)
-#     asyncio.get_event_loop().run_forever()
-
-
-import asyncio
-import websockets
-
-
-async def hello(websocket, path):
-    # name = await websocket.recv()
-    # print(f"<<< {name}")
-    #
-    # greeting = f"Hello {name}!"
-
-    await websocket.send("x")
-    # print(f">>> {greeting}")
 
 
 async def main():
-    print("main")
     async with websockets.serve(sender.time, "localhost", 5678):
         await asyncio.Future()  # run forever
 
 
-print("x")
+sender = JsonSender()
+listener = Listener(sender)
+# x = threading.Thread(target=listener.go)
+# x.start()
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-print("y")
-
 asyncio.run(main())
