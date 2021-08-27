@@ -2,7 +2,7 @@ import sys
 import threading
 from PyQt5 import QtWidgets
 
-from listener import Listener
+from telemetry import UdpTelemetrySource
 from plotter import SignalCommunicate, MainWindow
 from signal import SignalCommunicateAdapter
 
@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     sc = SignalCommunicate()
     adapter = SignalCommunicateAdapter(sc)
-    listener = Listener(adapter)
+    listener = UdpTelemetrySource([adapter])
     plugins = [
         # 'widget.TireTemperature',
         # 'widget.TireAngle',
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     mainWindow.listener = listener
     mainWindow.activate_signal(sc)
 
-    x = threading.Thread(target=listener.go)
+    x = threading.Thread(target=listener.run)
     x.start()
 
     mainWindow.show()

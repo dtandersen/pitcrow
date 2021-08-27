@@ -5,9 +5,9 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from packet import DashPacket
 
 
-class DataListener(metaclass=ABCMeta):
+class TelemetryListener(metaclass=ABCMeta):
     @abstractmethod
-    def recv(self, data: DashPacket):
+    def receive(self, data: DashPacket):
         pass
 
 
@@ -15,9 +15,9 @@ class SignalCommunicate(QObject):
     got_new_sensor_data = pyqtSignal(DashPacket)
 
 
-class SignalCommunicateAdapter(DataListener):
+class SignalCommunicateAdapter(TelemetryListener):
     def __init__(self, sc: SignalCommunicate):
         self.sc = sc
 
-    def recv(self, data: DashPacket):
+    def receive(self, data: DashPacket):
         self.sc.got_new_sensor_data.emit(data)

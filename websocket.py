@@ -1,34 +1,28 @@
 import dataclasses
 import json
-import threading
-import datetime
-import random
 import asyncio
+from typing import Optional
+
 import websockets
-from websockets.exceptions import ConnectionClosedOK
 
-from listener import Listener
+from telemetry import UdpTelemetrySource, TelemetrySource
 from packet import DashPacket
-from signal import DataListener
+from signal import TelemetryListener
 
 
-class EnhancedJSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
-        return super().default(o)
 
 
-class JsonSender(DataListener):
-    def __init__(self):
+class TelemetryServer(TelemetryListener):
+    def __init__(self, telemetry_source: TelemetrySource):
         self.data = None
         self.websocket = None
+        self.telemetry_source = telemetry_source
 
-    def recv(self, data: DashPacket):
+    def receive(self, data: DashPacket):
         # if self.websocket is None:
         #     return
 
-        print("got data")
+        # print("got data")
         self.data = data
         # x = json.dumps(self.data, cls=EnhancedJSONEncoder)
         # try:
@@ -39,11 +33,11 @@ class JsonSender(DataListener):
 
     async def time(self, websocket, path):
         self.websocket = websocket
-        listener.init()
+        self.telemetry_source.init()
         while True:
-            listener.read_data()
+            self.telemetry_source.receive()
             if self.data is None:
-                print("no data")
+                # print("no data")
                 continue
 
             x = json.dumps(self.data, cls=EnhancedJSONEncoder)
@@ -52,14 +46,13 @@ class JsonSender(DataListener):
 
 
 async def main():
-    async with websockets.serve(sender.time, "localhost", 5678):
+    telemetry_source = UdpTelemetrySource([])
+    server = TelemetryServer(telemetry_source)
+    telemetry_source.watchers = [server]
+
+    async with websockets.serve(server.time, "localhost", 5678):
         await asyncio.Future()  # run forever
 
-
-sender = JsonSender()
-listener = Listener(sender)
-# x = threading.Thread(target=listener.go)
-# x.start()
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 asyncio.run(main())
